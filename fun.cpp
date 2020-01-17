@@ -208,7 +208,7 @@ void Solution::storeSolution()
     fprintf(fp, "%d %.2f%% %lu\n", W*best,100 * (float)((W * best) - area) / (W * best), iter);
     for (Rect e : all)
     {
-        fprintf(fp, "%d %d %d %d\n", e.id ,e.left.x, e.left.y , e.rot);
+        fprintf(fp, "%d %d %d\n" ,e.left.x, e.left.y , e.rot);
     }
 
     fclose(fp);
