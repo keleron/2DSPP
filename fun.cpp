@@ -29,7 +29,7 @@ bool compareArea(Rect r1, Rect r2)
 
 vector<Rect> load(char *name)
 {
-
+    //  FUNCION ENCARGADA DE CARGAR LOS DATOS DESDE EL INPUT
     FILE *fp;
     fp = fopen(name, "r");
     if (fp == NULL)
@@ -43,15 +43,18 @@ vector<Rect> load(char *name)
     int id, w, h;
     vector<Rect> all;
     all.reserve(N);
-    for (size_t i = 0; i < N; i++)
+    for (int i = 0; i < N; i++)
     {
         fscanf(fp, "%d %d %d", &id, &w, &h);
-        if (w>h){
-            all.push_back(Rect(id, w,h));
-        } else {
-            all.push_back(Rect(id,h,w));
+        if (w > h)
+        {
+            all.push_back(Rect(id, w, h));
         }
-        
+        else
+        {
+            all.push_back(Rect(id, h, w));
+            all.back().change = true;
+        }
     }
     sort(all.begin(), all.end(), compareArea);
     area = fullArea(all);
@@ -79,6 +82,7 @@ void Solution::pop()
 
 pair<bool, int> Solution::checkPoint(Point p1)
 {
+    //ESTA FUNCION SE ENCARGA DE CHECKEAR SI UN PUNTO ESTA DISPONIBLE DENTRO DE LA GRILLA DE SOLUCION
     pair<bool, int> info;
     for (Rect rr : all)
     {
@@ -97,6 +101,8 @@ pair<bool, int> Solution::checkPoint(Point p1)
 
 pair<bool, int> Solution::check(Rect r1)
 {
+    //ESTA FUNCION SE ENCARGA DE CHECKEAR LA POSICION Y ROTACION
+    // DE UN RECTANGULO ESTA DISPONIBLE DENTRO DE LA GRILLA DE SOLUCION
     pair<bool, int> p1(true, -1);
     int c = 0;
     for (Rect rr : all)
@@ -120,6 +126,9 @@ pair<bool, int> Solution::check(Rect r1)
     }
     return p1;
 }
+
+// TODO DRAWER ESTA DESHABILITADO, PERO SE UTILIZA PARA TENER UNA INSTANCIA GRAFICA SOBRE EL PROBLEMA,
+// NORMALMANTE NO SE PUEDE ACTIVAR YA QUE REQUIERE UNA LIBRERIA DEPRECADA
 
 Drawer::Drawer(){};
 void Drawer::init(vector<Rect> rects)
@@ -199,16 +208,37 @@ int Solution::getBest()
     return c;
 }
 
+bool compareID(Rect i1, Rect i2) 
+{ 
+    return (i1.id < i2.id); 
+} 
+
 void Solution::storeSolution()
 {
+    vector<Rect> vect2;
+    Point temp;
+    for (Rect e : all)
+    {
+        if (e.change){
+            vect2.push_back(Rect(e.id, e.h, e.w));
+        } else {
+            vect2.push_back(Rect(e.id, e.w, e.h));
+        }
+        
+        vect2.back().left = Point(e.left.x, e.left.y);
+        vect2.back().right = Point(e.right.x, e.right.y);
+        vect2.back().rot = e.rot;
+    }
+    sort(vect2.begin(), vect2.end(), compareID); 
+
 
     FILE *fp = fopen(fileName, "a");
     fprintf(fp, "==================\n");
     fprintf(fp, "%d\n", best);
-    fprintf(fp, "%d %.2f%% %lu\n", W*best,100 * (float)((W * best) - area) / (W * best), iter);
+    fprintf(fp, "%d %.2f%% %lu\n", W * best, 100 * (float)((W * best) - area) / (W * best), iter);
     for (Rect e : all)
     {
-        fprintf(fp, "%d %d %d\n" ,e.left.x, e.left.y , e.rot);
+        fprintf(fp, "%d %d %d\n", e.left.x, e.left.y, e.rot);
     }
 
     fclose(fp);

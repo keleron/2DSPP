@@ -6,6 +6,8 @@
 
 using namespace std;
 
+
+//ESTE DOCUMENTO UNICAMENTE TIENE ABSTRACCIONES
 extern int N, W, best, where, area;
 extern string name;
 extern char fileName[100];
@@ -26,6 +28,7 @@ private:
 public:
     int w, h,id;
     bool rot = false;
+    bool change = false;
     Point left, right;
     Rect(int idd, int ww, int hh);
     string print();

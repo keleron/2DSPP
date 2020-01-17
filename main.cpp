@@ -9,6 +9,7 @@
 #include <math.h>
 #include <fstream>
 
+//MUCHAS CONSTANTES QUE SE UTILIZARAN A LO LARGO DE TODO EL DOCUMENTO
 using namespace std;
 int back(int level, pair<int, int> freeSpot);
 void printSet(set<int> my_set);
@@ -24,16 +25,15 @@ long unsigned int iter;
 
 int main(int argc, char *argv[])
 {
+    //LECTURA DEL INPUT
     printf("\nINIT INSTANCE %s\n", argv[1]);
     all = load(argv[1]);
     best = INT_MAX;
     sprintf(fileName, "%s.log", argv[1]);
-
-
     FILE *fp = fopen(fileName, "w");
     fprintf(fp, "%d %d\n", N, W);
     fclose(fp);
-
+    //END LECTURA
     low = ceil((float)area / (float)W);
     pair<int, int> cords(0, 0);
     back(0, cords);
@@ -44,16 +44,18 @@ int main(int argc, char *argv[])
 
 int back(int level, pair<int, int> freeSpot)
 {
+    //CADA VEZ QUE SE ENTRA ACA ES DEBIDO A QUE LA INSTANCIACION ANTERIOR FUE UN EXITO
     iter++;
     set<int> seto;
     if (level == N)
     {
+        //EN CASO DE QUE LA SOLUCION ES MEJOR SE REEMPLAZA Y SE ESCRIBE LA SOLUCION EN EL OUT.PUT
         int height = ss.getMax();
         if (height < best)
         {
+            //NUEVO MEJOR SOLUCION
             best = height;
             where = ss.getBest();
-
             printf("\tNEW BEST: %d\n", best);
             ss.storeSolution();
             if (best == low)
@@ -63,6 +65,7 @@ int back(int level, pair<int, int> freeSpot)
         return (level - 1);
     }
 
+    //COMIENZO DE LA BUSQUEDA POR UN ESPACIO DISPONIBLE
     pair<int, int> cords;
     bool once = true;
     Rect r = all[level];
@@ -71,14 +74,18 @@ int back(int level, pair<int, int> freeSpot)
     int xlim = W - 1;
 
     pair<bool, int> info;
+
+    //ESTOS DOS WHILE SE ENCARGAN DE BUSCAR PUNTO POR PUNTO UN LUGAR DISPONIBLE
     while (j < best)
     {
         while (i < xlim)
         {
+            //UNICAMENTE CHECKEA SI EL PUNTO ESTA DISPONIBLE, NO SI EL RECTANGULO ENCAJA
             info = ss.checkPoint(Point(i, j));
             if (info.first == false)
             {
-
+                //SI NO ESTA DISPONIBLE HACE UN SALTO INTELIGENTE BASANDOSE EN LA DIMENSION DEL
+                //RECTANGULO CON EL QUE SE COLISIONO
                 i = info.second;
                 continue;
             }
@@ -91,7 +98,7 @@ int back(int level, pair<int, int> freeSpot)
                     cords.second = j;
                     once = false;
                 }
-
+                //YA QUE ESTA DISPONIBLE SE SETEA EL RECTANGULO EN LA POSICION I,J
                 r.set(i, j);
                 if (r.left.y + min(r.w, r.h) >= best)
                 {
@@ -102,6 +109,8 @@ int back(int level, pair<int, int> freeSpot)
                     }
                     return (level - 1);
                 }
+
+                //Y SE PRUEBA CON AMBAS ROTACIONES
                 for (size_t i = 0; i < 2; i++)
                 {
                     if (r.right.y >= best)
@@ -112,12 +121,15 @@ int back(int level, pair<int, int> freeSpot)
                     pair<bool, int> info2 = ss.check(r);
                     if (info2.first)
                     {
+                        //SI LA ROTACION ENCAJA EL RECTANGULO SE AGREGA Y PASA AL SIGUIENTE ELEMENTO
 
                         ss.add(r);
                         where = back(level + 1, cords);
 
                         if (where != level)
                         {
+                            //WHERE REPRESENTA EL SALTO INTELIGENTE, POR LO TANTO HAY VECES QUE SALTARA
+                            //MUCHO MAS QUE UN NIVEL HACIA ARRIBA
                             ss.pop();
                             return where;
                         }
@@ -126,7 +138,8 @@ int back(int level, pair<int, int> freeSpot)
                     }
                     else if (info2.second != -2)
                     {
-
+                        //SI NO LOGRA ENCARGAR SE INSERTARA EL CONFLICTO MAS PREMATURAMENTE INSTANCIADO
+                        //EN UN CONJUNTO DEL NODO PADRE
                         seto.insert(info2.second);
                     }
                     r.rotate();
@@ -140,7 +153,7 @@ int back(int level, pair<int, int> freeSpot)
     }
     if (!seto.empty())
     {
-
+        //CUANDO HAY UNA FALLA TOTAL, SE ELIGE EL MAYOR DE DEL CONJUNTO Y SE BUSCA SALTAR HACIA ESE NIVEL
         return findMax(seto);
     }
     return (level - 1);

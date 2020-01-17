@@ -1,3 +1,8 @@
+"""ESTE DOCUMENTO UNICAMENTE TIENE UN PROPOSITO COMPLEMENTARIO, TOMA LOS OUTPUTS DE LA CARPETA INPUTS
+Y LOS TRABAJA DE FORMA QUE PUEDAN SER VISTOS COMO LA TABLA DEL INFORME.
+"""
+
+
 import numpy as np
 from PIL import Image
 import matplotlib.patches as patches
@@ -8,7 +13,6 @@ logs = list(filter(lambda x: x.endswith(".log"), lsx))
 logs.sort()
 txts = list(filter(lambda x: x.endswith(".TXT"), lsx))
 instances = []
-
 for name in logs:
     f = open(f"inputs/{name}", "r")
     data = f.read().split("==================")
