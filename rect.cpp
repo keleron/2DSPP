@@ -4,8 +4,9 @@
 #include <vector>
 #include <string>
 
-Rect::Rect(int ww, int hh)
-{
+Rect::Rect(int idd, int ww, int hh)
+{   
+    id = idd;
     w = ww;
     h = hh;
 }

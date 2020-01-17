@@ -20,6 +20,7 @@ vector<Rect> all;
 Solution ss;
 unsigned int usecs = 10000;
 char fileName[100];
+long unsigned int iter;
 
 int main(int argc, char *argv[])
 {
@@ -43,6 +44,7 @@ int main(int argc, char *argv[])
 
 int back(int level, pair<int, int> freeSpot)
 {
+    iter++;
     set<int> seto;
     if (level == N)
     {

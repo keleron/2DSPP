@@ -46,7 +46,12 @@ vector<Rect> load(char *name)
     for (size_t i = 0; i < N; i++)
     {
         fscanf(fp, "%d %d %d", &id, &w, &h);
-        all.push_back(Rect(w,h));
+        if (w>h){
+            all.push_back(Rect(id, w,h));
+        } else {
+            all.push_back(Rect(id,h,w));
+        }
+        
     }
     sort(all.begin(), all.end(), compareArea);
     area = fullArea(all);
@@ -200,10 +205,10 @@ void Solution::storeSolution()
     FILE *fp = fopen(fileName, "a");
     fprintf(fp, "==================\n");
     fprintf(fp, "%d\n", best);
-    fprintf(fp, "%d %.2f %%\n", W*best,100 * (float)((W * best) - area) / (W * best));
+    fprintf(fp, "%d %.2f%% %lu\n", W*best,100 * (float)((W * best) - area) / (W * best), iter);
     for (Rect e : all)
     {
-        fprintf(fp, "%d %d %d\n", e.left.x, e.left.y , e.rot);
+        fprintf(fp, "%d %d %d %d\n", e.id ,e.left.x, e.left.y , e.rot);
     }
 
     fclose(fp);

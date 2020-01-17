@@ -9,6 +9,7 @@ using namespace std;
 extern int N, W, best, where, area;
 extern string name;
 extern char fileName[100];
+extern long unsigned int iter;
 
 class Point
 {
@@ -23,10 +24,10 @@ class Rect
 private:
     /* data */
 public:
-    int w, h;
+    int w, h,id;
     bool rot = false;
     Point left, right;
-    Rect(int ww, int hh);
+    Rect(int idd, int ww, int hh);
     string print();
     void rotate();
     void set(int x, int y);
